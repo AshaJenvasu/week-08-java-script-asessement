@@ -43,3 +43,21 @@ Out of Bounds (Lose): If the user walks outside the map (e.g., this.y < 0 or thi
 Demons (Lose): Same logic applies; if Hawk-chan lands on a hole (👿), the game ends.
 
 Leftover Food (Win): If the new coordinate matches the hat (🍖), a congratulatory message is displayed, and the loop breaks to end the game.
+
+6. Random Field Generation
+
+After finishing the movement and logic, the trickiest part was figuring out how to randomly generate a fresh map every time the game starts.
+
+First, I thought about what actually needs to be randomized — just 3 things: Hawk-chan's starting position, the Demons (holes), and the Leftover Food (hat).
+
+Build an empty field first
+Used a nested loop height × width and filled with path. This gives us a clean 2D Array ready to work with.
+
+Random Hawk-chan's position
+Used Math.floor(Math.random() \* height/width) to randomize startY and startX, then placed the character there. Also returned startX and startY out of the method because the constructor needs to know where Hawk-chan starts.
+
+Random Demons based on percentage
+Calculated the total number of holes using Math.floor(height _ width _ percentage), then kept randomizing positions in a loop. The tricky part is if the randomized isn't a path (e.g. it lands on Hawk-chan's position), we do i-- to not count that and force it to retry until all holes are placed correctly.
+
+Lastly Random the Leftover Food (hat)
+Used a while loop that keeps running until it finds an empty path, then places the hat there. This guarantees the hat never overlaps with the character or any hole.

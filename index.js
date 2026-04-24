@@ -7,10 +7,10 @@ const path = "🌿";
 const character = "🐷";
 
 class Game {
-  constructor(field) {
+  constructor(field, startX, startY) {
     this.field = field;
-    this.x = 0;
-    this.y = 0;
+    this.x = startX;
+    this.y = startY;
   }
   printField() {
     console.log(this.field.map((row) => row.join("")).join("\n"));
@@ -76,13 +76,55 @@ class Game {
       this.field[this.y][this.x] = character;
     }
   }
+
+  static generateField(height, width, percentage) {
+    const newField = [];
+
+    for (let y = 0; y < height; y++) {
+      const row = [];
+      for (let x = 0; x < width; x++) {
+        row.push(path);
+      }
+      newField.push(row);
+    }
+
+    const startY = Math.floor(Math.random() * height);
+    const startX = Math.floor(Math.random() * width);
+    newField[startY][startX] = character;
+
+    const holeCount = Math.floor(height * width * percentage);
+    for (let i = 0; i < holeCount; i++) {
+      let randomY = Math.floor(Math.random() * height);
+      let randomX = Math.floor(Math.random() * width);
+
+      if (newField[randomY][randomX] === path) {
+        newField[randomY][randomX] = hole;
+      } else {
+        i--;
+      }
+    }
+
+    let hatPlaced = false;
+    while (!hatPlaced) {
+      let randomY = Math.floor(Math.random() * height);
+      let randomX = Math.floor(Math.random() * width);
+
+      if (newField[randomY][randomX] === path) {
+        newField[randomY][randomX] = hat;
+        hatPlaced = true;
+      }
+    }
+
+    return { field: newField, startX, startY };
+  }
 }
 
-const myMap = [
-  [character, path, path],
-  [path, hole, path],
-  [path, path, hat],
-];
+// const myMap = [
+//   [character, path, path],
+//   [path, hole, path],
+//   [path, path, hat],
+// ];
 
-const myGame = new Game(myMap);
+const { field, startX, startY } = Game.generateField(5, 5, 0.1);
+const myGame = new Game(field, startX, startY);
 myGame.play();
